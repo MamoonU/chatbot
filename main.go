@@ -1,11 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
-	"net"
-	"os"
 )
 
 var (
@@ -47,49 +44,4 @@ func main() {
 		return
 	}
 
-}
-
-func server() error {
-
-	ln, err := net.Listen("tcp", "127.0.0.1:8080")
-	if err != nil {
-		return err
-	}
-	for {
-		conn, err := ln.Accept()
-		if err != nil {
-			return err
-		}
-		go handleConnection(conn)
-	}
-
-}
-
-func handleConnection(conn net.Conn) {
-
-	scanner := bufio.NewScanner(conn)
-	for scanner.Scan() {
-		fmt.Println(scanner.Text())
-	}
-	if scanner.Err() != nil {
-		fmt.Println(scanner.Err())
-	}
-}
-
-func client() error {
-
-	conn, err := net.Dial("tcp", "127.0.0.1:8080")
-	if err != nil {
-		return err
-	}
-
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		fmt.Fprintf(conn, "[%s] %s\n", nickname, scanner.Text())
-	}
-	if scanner.Err() != nil {
-		return scanner.Err()
-	}
-	return nil
-	//fmt.Fprintf(conn, "Client Connection Test\n")
 }
